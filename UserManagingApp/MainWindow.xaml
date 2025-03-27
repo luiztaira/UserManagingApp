@@ -1,0 +1,29 @@
+﻿<Window x:Class="UserManagingApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="User Search" Height="350" Width="500">
+    <Grid>
+        <StackPanel Margin="10">
+            <!-- Search Box with Placeholder -->
+            <Grid>
+                <TextBox x:Name="SearchTextBox"
+                         Foreground="Black"
+                         VerticalAlignment="Center"
+                         TextChanged="SearchTextBox_TextChanged"/>
+                <TextBlock x:Name="PlaceholderTextBlock"
+                           Text="Enter name or email"
+                           Foreground="Gray"
+                           VerticalAlignment="Center"
+                           Margin="5,0,0,0"
+                           IsHitTestVisible="False"/>
+            </Grid>
+
+            <!-- Search Button -->
+            <Button Content="Search" Width="100" Height="30" Click="SearchButton_Click" />
+
+            <!-- User List Display -->
+            <ListBox x:Name="UserListBox" Width="400" Height="200"
+                     DisplayMemberPath="Name"/>
+        </StackPanel>
+    </Grid>
+</Window>
