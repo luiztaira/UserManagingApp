@@ -5,7 +5,7 @@ public class UserManagerContext : DbContext
 {
     public DbSet<User> Users { get; set; }
 
-    //sql database コネクション文字列
+    //sql database 接続文字列
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=userManager;Username=postgres;Password=luiz2803");

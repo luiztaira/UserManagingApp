@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 
 namespace UserManagingApp
@@ -47,6 +48,7 @@ namespace UserManagingApp
 
                 var filteredUsers = users
                     .Where(u => regex.IsMatch(u.Name) || regex.IsMatch(u.Email))
+                    .Select(u => new { u.Name, u.Email }) // Create an anonymous object containing both Name and Email
                     .ToList();
 
                 // マッチしたユーザーをUserListBoxに表示する
@@ -55,6 +57,13 @@ namespace UserManagingApp
             catch (ArgumentException)
             {
                 MessageBox.Show("Invalid format.");
+            }
+        }
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SearchButton_Click(sender, e);
             }
         }
     }
