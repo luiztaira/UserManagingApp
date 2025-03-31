@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
@@ -14,64 +16,38 @@ namespace UserManagingApp
         {
             InitializeComponent();
             _context = new UserManagerContext();
-            _context.Database.EnsureCreated();
-           //検索ボックスのplaceholderを起動
-            SearchTextBox.TextChanged += SearchTextBox_TextChanged;
-            PlaceholderTextBlock.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            InitializeComponents();
+            RefreshUserList();
         }
 
-        // placeholder有無ハンドラー
-        private void SearchTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void InitializeComponents()
+        {
+            // Initialize placeholder
+            UpdatePlaceholderVisibility();
+            SearchTextBox.TextChanged += (s, e) => UpdatePlaceholderVisibility();
+
+            // Setup privileges filter
+            PrivilegesCombo.ItemsSource = new Dictionary<string, string>
+            {
+                { "", "All Privileges" },
+                { "admin", "Admin" },
+                { "user", "User" },
+                { "guest", "Guest" }
+            };
+            PrivilegesCombo.SelectedIndex = 0;
+
+            // Set default date range
+            FromDatePicker.SelectedDate = DateTime.Today.AddDays(-30);
+            ToDatePicker.SelectedDate = DateTime.Today;
+        }
+
+        private void UpdatePlaceholderVisibility()
         {
             PlaceholderTextBlock.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
         }
-        //検索ボタンハンドラー
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-{
-    string pattern = SearchTextBox.Text;
 
-    if (string.IsNullOrWhiteSpace(pattern))
-    {
-        MessageBox.Show("Please enter a valid search.");
-        return;
-    }
-
-    try
-    {
-        // Entity Frameworkでユーザーをゲット
-        var users = _context.Users
-            .AsNoTracking()
-            .ToList();
-
-        // メモリー内にregexフィルターをかけ、リストを作成する。
-        var regex = new Regex(pattern, RegexOptions.IgnoreCase);
-
-        var filteredUsers = users
-            .Select(u => new {
-                User = u,
-                NameMatch = regex.Match(u.Name),
-                EmailMatch = regex.Match(u.Email)
-            })
-            .Where(x => x.NameMatch.Success || x.EmailMatch.Success)
-            .OrderBy(x => x.NameMatch.Success ? x.NameMatch.Index : int.MaxValue)
-            .ThenBy(x => x.EmailMatch.Success ? x.EmailMatch.Index : int.MaxValue)
-            .ThenBy(x => x.User.Name)
-            .Select(x => new { x.User.Id, x.User.Name, x.User.Email })
-            .ToList();
-
-        UserListBox.ItemsSource = filteredUsers;
-    }
-    catch (ArgumentException)
-    {
-        MessageBox.Show("Invalid format.");
-    }
-}
-
-        //エンターキーで検索
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -80,30 +56,96 @@ namespace UserManagingApp
             }
         }
 
-        private void DeleteUser_Click(object sender, RoutedEventArgs e)
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            if (UserListBox.SelectedItem == null)
+            try
             {
-                MessageBox.Show("Please select a user first.");
-                return;
-            }
+                var query = _context.Users.AsNoTracking().AsQueryable();
+                string searchTerm = SearchTextBox.Text.Trim();
 
-            dynamic selectedItem = UserListBox.SelectedItem;
-            var userToDelete = _context.Users.Find(selectedItem.Id);
-
-            if (userToDelete != null)
-            {
-                var result = MessageBox.Show($"Delete user {userToDelete.Name}?",
-                                          "Confirm Delete",
-                                          MessageBoxButton.YesNo);
-
-                if (result == MessageBoxResult.Yes)
+                if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    _context.Users.Remove(userToDelete);
-                    _context.SaveChanges();
-                    SearchButton_Click(sender, e); // GUI表示を更新
-                    MessageBox.Show("User deleted successfully.");
+                    query = query.Where(u =>
+                        EF.Functions.ILike(u.Name, $"%{searchTerm}%") ||
+                        EF.Functions.ILike(u.Email, $"%{searchTerm}%") ||
+                        (u.PhoneNumber != null && EF.Functions.ILike(u.PhoneNumber, $"%{searchTerm}%")) ||
+                        (u.Privileges != null && EF.Functions.ILike(u.Privileges, $"%{searchTerm}%")));
                 }
+
+                // Convert date picker values to UTC
+                if (FromDatePicker.SelectedDate != null)
+                {
+                    var fromDateUtc = FromDatePicker.SelectedDate.Value.ToUniversalTime();
+                    query = query.Where(u => u.CreatedAt >= fromDateUtc);
+                }
+
+                if (ToDatePicker.SelectedDate != null)
+                {
+                    var toDateUtc = ToDatePicker.SelectedDate.Value.AddDays(1).ToUniversalTime();
+                    query = query.Where(u => u.CreatedAt <= toDateUtc);
+                }
+
+                // Privileges filter
+                if (PrivilegesCombo.SelectedValue is string selectedPrivilege && !string.IsNullOrEmpty(selectedPrivilege))
+                {
+                    query = query.Where(u => u.Privileges == selectedPrivilege);
+                }
+
+                UserListBox.ItemsSource = query
+                    .OrderBy(u => u.Name)
+                    .Select(u => new
+                    {
+                        u.Id,
+                        u.Name,
+                        u.Email,
+                        PhoneNumber = u.PhoneNumber ?? "-",
+                        Privileges = u.Privileges ?? "-",
+                        CreatedAt = u.CreatedAt.ToString("yyyy-MM-dd")
+                    })
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Search error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RefreshUserList()
+        {
+            UserListBox.ItemsSource = _context.Users
+                .AsNoTracking()
+                .OrderBy(u => u.Name)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Name,
+                    u.Email,
+                    PhoneNumber = u.PhoneNumber ?? "-",
+                    Privileges = u.Privileges ?? "-",
+                    CreatedAt = u.CreatedAt.ToString("yyyy-MM-dd")
+                })
+                .ToList();
+        }
+
+        private void ResetFilters_Click(object sender, RoutedEventArgs e)
+        {
+            SearchTextBox.Text = string.Empty;
+            FromDatePicker.SelectedDate = DateTime.Today.AddDays(-30);
+            ToDatePicker.SelectedDate = DateTime.Today;
+            PrivilegesCombo.SelectedIndex = 0;
+            RefreshUserList();
+        }
+
+        private void AddUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            var addWindow = new AddUserWindow(_context);
+            if (addWindow.ShowDialog() == true && addWindow.NewUser != null)
+            {
+                RefreshUserList();
+                MessageBox.Show($"User '{addWindow.NewUser.Name}' added successfully.",
+                    "Success",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
             }
         }
 
@@ -111,7 +153,10 @@ namespace UserManagingApp
         {
             if (UserListBox.SelectedItem == null)
             {
-                MessageBox.Show("Please select a user first.");
+                MessageBox.Show("Please select a user first.",
+                    "No Selection",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
                 return;
             }
 
@@ -123,8 +168,53 @@ namespace UserManagingApp
                 var editWindow = new EditUserWindow(userToEdit);
                 if (editWindow.ShowDialog() == true)
                 {
+                    userToEdit.LastUpdatedAt = DateTime.UtcNow;
                     _context.SaveChanges();
-                    SearchButton_Click(sender, e); // GUI表示を更新
+                    RefreshUserList();
+                }
+            }
+        }
+
+        private void DeleteUser_Click(object sender, RoutedEventArgs e)
+        {
+            if (UserListBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a user first.",
+                    "No Selection",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
+            dynamic selectedItem = UserListBox.SelectedItem;
+            var userToDelete = _context.Users.Find(selectedItem.Id);
+
+            if (userToDelete != null)
+            {
+                var result = MessageBox.Show($"Are you sure you want to delete user '{userToDelete.Name}'?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _context.Users.Remove(userToDelete);
+                        _context.SaveChanges();
+                        RefreshUserList();
+                        MessageBox.Show("User deleted successfully.",
+                            "Success",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to delete user: {ex.Message}",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
                 }
             }
         }

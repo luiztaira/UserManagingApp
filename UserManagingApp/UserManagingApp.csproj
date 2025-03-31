@@ -9,6 +9,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Assets\Images\NewFolder\**" />
+    <Compile Remove="Assets\NewFolder1\**" />
+    <Compile Remove="Assets\NewFolder\**" />
+    <EmbeddedResource Remove="Assets\Images\NewFolder\**" />
+    <EmbeddedResource Remove="Assets\NewFolder1\**" />
+    <EmbeddedResource Remove="Assets\NewFolder\**" />
+    <None Remove="Assets\Images\NewFolder\**" />
+    <None Remove="Assets\NewFolder1\**" />
+    <None Remove="Assets\NewFolder\**" />
+    <Page Remove="Assets\Images\NewFolder\**" />
+    <Page Remove="Assets\NewFolder1\**" />
+    <Page Remove="Assets\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Images\AddUser.png" />
+    <None Remove="Assets\Images\ManageCounterSets.png" />
+    <None Remove="Assets\Images\Search.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -16,6 +37,15 @@
     </PackageReference>
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\AddUser.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Images\Search.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>
