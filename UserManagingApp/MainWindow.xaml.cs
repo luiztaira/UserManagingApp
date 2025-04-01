@@ -37,8 +37,8 @@ namespace UserManagingApp
             PrivilegesCombo.SelectedIndex = 0;
 
             // Set default date range
-            FromDatePicker.SelectedDate = DateTime.Today.AddDays(-30);
-            ToDatePicker.SelectedDate = DateTime.Today;
+            FromDatePicker.SelectedDate = null;
+            ToDatePicker.SelectedDate = null;
         }
 
         private void UpdatePlaceholderVisibility()
@@ -63,6 +63,7 @@ namespace UserManagingApp
                 var query = _context.Users.AsNoTracking().AsQueryable();
                 string searchTerm = SearchTextBox.Text.Trim();
 
+                // Text search (applies to all fields including privileges)
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
                     query = query.Where(u =>
@@ -72,23 +73,19 @@ namespace UserManagingApp
                         (u.Privileges != null && EF.Functions.ILike(u.Privileges, $"%{searchTerm}%")));
                 }
 
-                // Convert date picker values to UTC
-                if (FromDatePicker.SelectedDate != null)
-                {
-                    var fromDateUtc = FromDatePicker.SelectedDate.Value.ToUniversalTime();
-                    query = query.Where(u => u.CreatedAt >= fromDateUtc);
-                }
-
-                if (ToDatePicker.SelectedDate != null)
-                {
-                    var toDateUtc = ToDatePicker.SelectedDate.Value.AddDays(1).ToUniversalTime();
-                    query = query.Where(u => u.CreatedAt <= toDateUtc);
-                }
-
-                // Privileges filter
+                // Privileges ComboBox filter (exact match)
                 if (PrivilegesCombo.SelectedValue is string selectedPrivilege && !string.IsNullOrEmpty(selectedPrivilege))
                 {
-                    query = query.Where(u => u.Privileges == selectedPrivilege);
+                    query = query.Where(u => u.Privileges != null &&
+                           u.Privileges.ToLower() == selectedPrivilege.ToLower());
+                }
+
+                // Date filter (unchanged)
+                if (FromDatePicker.SelectedDate != null && ToDatePicker.SelectedDate != null)
+                {
+                    var fromDateUtc = FromDatePicker.SelectedDate.Value.ToUniversalTime();
+                    var toDateUtc = ToDatePicker.SelectedDate.Value.AddDays(1).ToUniversalTime();
+                    query = query.Where(u => u.CreatedAt >= fromDateUtc && u.CreatedAt <= toDateUtc);
                 }
 
                 UserListBox.ItemsSource = query
@@ -130,10 +127,24 @@ namespace UserManagingApp
         private void ResetFilters_Click(object sender, RoutedEventArgs e)
         {
             SearchTextBox.Text = string.Empty;
-            FromDatePicker.SelectedDate = DateTime.Today.AddDays(-30);
-            ToDatePicker.SelectedDate = DateTime.Today;
+            FromDatePicker.SelectedDate = null;
+            ToDatePicker.SelectedDate = null;
             PrivilegesCombo.SelectedIndex = 0;
             RefreshUserList();
+        }
+
+        // Clear dates button handler
+        private void ClearDates_Click(object sender, RoutedEventArgs e)
+        {
+            FromDatePicker.SelectedDate = null;
+            ToDatePicker.SelectedDate = null;
+        }
+
+        // Window size change handler
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            // Optional: Add any dynamic adjustments here
         }
 
         private void AddUserButton_Click(object sender, RoutedEventArgs e)

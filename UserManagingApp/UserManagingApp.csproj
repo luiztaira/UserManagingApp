@@ -24,9 +24,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Icons\AddUser.ico" />
+    <None Remove="Assets\Icons\Edit.ico" />
     <None Remove="Assets\Images\AddUser.png" />
+    <None Remove="Assets\Images\ManageCounterSets.ico" />
     <None Remove="Assets\Images\ManageCounterSets.png" />
     <None Remove="Assets\Images\Search.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Icons\AddUser.ico" />
+    <Resource Include="Assets\Icons\Edit.ico" />
+    <Resource Include="Assets\Icons\ManageCounterSets.ico" />
   </ItemGroup>
 
   <ItemGroup>

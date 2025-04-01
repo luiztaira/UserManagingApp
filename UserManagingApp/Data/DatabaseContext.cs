@@ -36,7 +36,7 @@ public class UserManagerContext : DbContext
                 Name = "Luiz Taira",
                 Email = "luiztaira@example.com",
                 PhoneNumber = "+1234567890",
-                Privileges = "admin",
+                Privileges = "Admin",
                 CreatedAt = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 LastUpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             },
@@ -46,7 +46,7 @@ public class UserManagerContext : DbContext
                 Name = "Yagami Taichi",
                 Email = "yagamitaichi@example.com",
                 PhoneNumber = "+9876543210",
-                Privileges = "user",
+                Privileges = "User",
                 CreatedAt = new DateTime(2023, 1, 15, 0, 0, 0, DateTimeKind.Utc),
                 LastUpdatedAt = new DateTime(2023, 1, 15, 0, 0, 0, DateTimeKind.Utc)
             }

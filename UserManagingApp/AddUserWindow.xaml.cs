@@ -37,6 +37,7 @@ namespace UserManagingApp
             try
             {
                 _context.Users.Add(NewUser);
+                _context.SaveChanges();
                 DialogResult = true;
                 Close();
             }
