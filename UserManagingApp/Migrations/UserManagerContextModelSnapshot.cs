@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,11 +10,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace UserManagingApp.Migrations
 {
     [DbContext(typeof(UserManagerContext))]
-    [Migration("20250331060301_UpdateSeedDataWithNewFields")]
-    partial class UpdateSeedDataWithNewFields
+    partial class UserManagerContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +66,7 @@ namespace UserManagingApp.Migrations
                             LastUpdatedAt = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Luiz Taira",
                             PhoneNumber = "+1234567890",
-                            Privileges = "admin"
+                            Privileges = "Admin"
                         },
                         new
                         {
@@ -79,7 +76,7 @@ namespace UserManagingApp.Migrations
                             LastUpdatedAt = new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
                             Name = "Yagami Taichi",
                             PhoneNumber = "+9876543210",
-                            Privileges = "user"
+                            Privileges = "User"
                         });
                 });
 #pragma warning restore 612, 618

@@ -34,7 +34,7 @@ namespace UserManagingApp
             if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
                 string.IsNullOrWhiteSpace(EmailTextBox.Text))
             {
-                MessageBox.Show("Name and Email are required");
+                MessageBox.Show("名前とメールアドレスは必須項目です。");
                 return;
             }
 

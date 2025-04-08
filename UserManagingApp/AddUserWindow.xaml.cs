@@ -20,7 +20,7 @@ namespace UserManagingApp
             if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
                 string.IsNullOrWhiteSpace(EmailTextBox.Text))
             {
-                MessageBox.Show("Please enter both name and email");
+                MessageBox.Show("名前とメールアドレスは必須項目です。");
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace UserManagingApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving user: {ex.Message}");
+                MessageBox.Show($"ユーザーを追加できませんでした：{ex.Message}");
             }
         }
     }

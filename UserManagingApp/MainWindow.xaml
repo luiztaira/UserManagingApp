@@ -1,7 +1,7 @@
 ﻿<Window x:Class="UserManagingApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="User Managing" 
+        Title="ユーザー管理" 
         Height="600" Width="800"
         Icon="/Assets/Icons/ManageCounterSets.ico"
         SizeToContent="Manual"
@@ -52,7 +52,7 @@
                        IsHitTestVisible="False"/>
 
                 <TextBlock x:Name="PlaceholderTextBlock"
-                           Text="Search by name, email, phone, or privileges"
+                           Text="フィルターを選択し、検索してください。"
                            Foreground="Gray"
                            VerticalAlignment="Center"
                            Margin="25,0,5,0"
@@ -60,20 +60,20 @@
             </Grid>
 
             <Button x:Name="SearchButton" 
-                    Content="Search" 
+                    Content="検索" 
                     Width="80" 
                     Margin="10,0,0,0" 
                     Click="SearchButton_Click"/>
 
             <Button x:Name="ResetButton"
-                    Content="Reset"
+                    Content="リセット"
                     Width="80"
                     Margin="10,0,0,0"
                     Click="ResetFilters_Click"/>
         </StackPanel>
 
         <!-- Advanced Filters -->
-        <Expander Grid.Row="1" Header="Advanced Filters" Margin="0,10">
+        <Expander Grid.Row="1" Header="フィルター" Margin="0,10" IsExpanded="True">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -85,17 +85,30 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Created Between:" 
+                    <TextBlock Grid.Row="0" Text="作成日：" 
                                VerticalAlignment="Center" Margin="0,0,10,5"/>
                     <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                        <DatePicker x:Name="FromDatePicker" Width="120"/>
-                        <TextBlock Text=" to " VerticalAlignment="Center" Margin="10,0"/>
-                        <DatePicker x:Name="ToDatePicker" Width="120"/>
+                        <DatePicker x:Name="FromDatePicker" Width="120" Language="ja-Jp">
+                            <DatePicker.Resources>
+                                <Style TargetType="DatePickerTextBox">
+                                    <Setter Property="Text" Value="日付を選択"/>
+                                </Style>
+                            </DatePicker.Resources>
+                        </DatePicker>
+                        <TextBlock Text=" から " VerticalAlignment="Center" Margin="10,0"/>
+                        <DatePicker x:Name="ToDatePicker" Width="120" Language="ja-Jp">
+                            <DatePicker.Resources>
+                                <Style TargetType="DatePickerTextBox">
+                                    <Setter Property="Text" Value="日付を選択"/>
+                                </Style>
+                            </DatePicker.Resources>
+                        </DatePicker>
+                        <TextBlock Text="まで" VerticalAlignment="Center" Margin="10,0"/>
                         <Button Content="×" Width="20" Margin="5,0" Click="ClearDates_Click"
                                 ToolTip="Clear dates"/>
                     </StackPanel>
 
-                    <TextBlock Grid.Row="1" Text="Privileges:" 
+                    <TextBlock Grid.Row="1" Text="権限：" 
                                VerticalAlignment="Center" Margin="0,5,10,5"/>
                     <ComboBox Grid.Row="1" Grid.Column="1" x:Name="PrivilegesCombo"
                               DisplayMemberPath="Value" SelectedValuePath="Key" Margin="0,5,10,5"/>
@@ -113,11 +126,11 @@
                     <ColumnDefinition Width="1*" MinWidth="120"/>
                     <ColumnDefinition Width="1.5*" MinWidth="150"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="NAME" FontWeight="Bold"/>
-                <TextBlock Text="EMAIL" Grid.Column="1" FontWeight="Bold"/>
-                <TextBlock Text="PHONE" Grid.Column="2" FontWeight="Bold"/>
-                <TextBlock Text="PRIVILEGES" Grid.Column="3" FontWeight="Bold"/>
-                <TextBlock Text="CREATED AT" Grid.Column="4" FontWeight="Bold"/>
+                <TextBlock Text="名前" FontWeight="Bold"/>
+                <TextBlock Text="メールアドレス" Grid.Column="1" FontWeight="Bold"/>
+                <TextBlock Text="電話番号" Grid.Column="2" FontWeight="Bold"/>
+                <TextBlock Text="権限" Grid.Column="3" FontWeight="Bold"/>
+                <TextBlock Text="作成日" Grid.Column="4" FontWeight="Bold"/>
             </Grid>
         </Border>
 
@@ -170,19 +183,19 @@
                            Width="16"
                            Height="16"
                            Margin="0,0,5,0"/>
-                    <TextBlock Text="Add User" VerticalAlignment="Center"/>
+                    <TextBlock Text="ユーザーを追加" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="EditUserButton"
-                        Content="Edit Selected"
+                        Content="ユーザーを編集"
                         Width="100"
                         Margin="0,0,10,0"
                         Click="EditUser_Click"/>
 
                 <Button x:Name="DeleteUserButton"
-                        Content="Delete Selected"
+                        Content="ユーザーの削除"
                         Width="100"
                         Click="DeleteUser_Click"/>
             </StackPanel>

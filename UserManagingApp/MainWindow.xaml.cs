@@ -29,7 +29,7 @@ namespace UserManagingApp
             // Setup privileges filter
             PrivilegesCombo.ItemsSource = new Dictionary<string, string>
             {
-                { "", "All Privileges" },
+                { "", "全ての権限" },
                 { "admin", "Admin" },
                 { "user", "User" },
                 { "guest", "Guest" }
@@ -103,7 +103,7 @@ namespace UserManagingApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Search error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"検索エラー: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -153,8 +153,8 @@ namespace UserManagingApp
             if (addWindow.ShowDialog() == true && addWindow.NewUser != null)
             {
                 RefreshUserList();
-                MessageBox.Show($"User '{addWindow.NewUser.Name}' added successfully.",
-                    "Success",
+                MessageBox.Show($"ユーザー「'{addWindow.NewUser.Name}'」が追加されました",
+                    "",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
@@ -164,8 +164,8 @@ namespace UserManagingApp
         {
             if (UserListBox.SelectedItem == null)
             {
-                MessageBox.Show("Please select a user first.",
-                    "No Selection",
+                MessageBox.Show("編集したいユーザーを選択してください",
+                    "エラー",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
@@ -190,8 +190,8 @@ namespace UserManagingApp
         {
             if (UserListBox.SelectedItem == null)
             {
-                MessageBox.Show("Please select a user first.",
-                    "No Selection",
+                MessageBox.Show("削除したいユーザーを選択してください",
+                    "エラー",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
@@ -202,8 +202,8 @@ namespace UserManagingApp
 
             if (userToDelete != null)
             {
-                var result = MessageBox.Show($"Are you sure you want to delete user '{userToDelete.Name}'?",
-                    "Confirm Delete",
+                var result = MessageBox.Show($"ユーザー「'{userToDelete.Name}'」を削除します。よろしいですか。",
+                    "",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
@@ -214,15 +214,15 @@ namespace UserManagingApp
                         _context.Users.Remove(userToDelete);
                         _context.SaveChanges();
                         RefreshUserList();
-                        MessageBox.Show("User deleted successfully.",
-                            "Success",
+                        MessageBox.Show("ユーザーを削除しました。",
+                            "",
                             MessageBoxButton.OK,
                             MessageBoxImage.Information);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Failed to delete user: {ex.Message}",
-                            "Error",
+                        MessageBox.Show($"ユーザーを削除できませんでした: {ex.Message}",
+                            "エラー",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error);
                     }
