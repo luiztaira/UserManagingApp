@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using UserManagingApp.Models;
+using UserManagingApp.Services;
 
 namespace UserManagingApp
 {
@@ -17,10 +18,50 @@ namespace UserManagingApp
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(NameTextBox.Text) ||
-                string.IsNullOrWhiteSpace(EmailTextBox.Text))
+            var name = NameTextBox.Text.Trim();
+            var email = EmailTextBox.Text.Trim();
+
+            if (UserValidator.isNameBlank(name, out var NameError))
             {
-                MessageBox.Show("名前とメールアドレスは必須項目です。");
+                MessageBox.Show(
+                    NameError,
+                    "エラー",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+                return;
+            }
+
+            if (UserValidator.isEmailBlank(email, out var EmailError)) 
+            {
+                MessageBox.Show(
+                    EmailError,
+                    "エラー",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                    );
+                return;
+            }
+
+
+            if (UserValidator.IsNameDuplicate(_context, name, out var dupNameError))
+            {
+                MessageBox.Show(
+                    dupNameError,
+                    "エラー",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                return;
+            }
+
+            if (UserValidator.IsEmailDuplicate(_context, email, out var dupEmailError))
+            {
+                MessageBox.Show(
+                    dupEmailError,
+                    "エラー",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return;
             }
 

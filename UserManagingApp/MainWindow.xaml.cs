@@ -176,7 +176,7 @@ namespace UserManagingApp
 
             if (userToEdit != null)
             {
-                var editWindow = new EditUserWindow(userToEdit);
+                var editWindow = new EditUserWindow(userToEdit, _context);
                 if (editWindow.ShowDialog() == true)
                 {
                     userToEdit.LastUpdatedAt = DateTime.UtcNow;
