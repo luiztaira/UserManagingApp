@@ -1,229 +1,286 @@
-﻿<Window x:Class="UserManagingApp.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ユーザー管理" 
-        Height="600" Width="800"
-        Icon="/Assets/Icons/ManageCounterSets.ico"
-        SizeToContent="Manual"
-        ResizeMode="CanResizeWithGrip"
-        MinWidth="600"
-        MinHeight="450"
-        WindowStartupLocation="CenterOwner">
+﻿<Window
+    x:Class="UserManagingApp.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="ユーザー管理"
+    Width="800"
+    Height="600"
+    MinWidth="600"
+    MinHeight="450"
+    Icon="/Assets/Icons/ManageCounterSets.ico"
+    ResizeMode="CanResizeWithGrip"
+    SizeToContent="Manual"
+    WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
         <Style TargetType="ListBoxItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Padding" Value="0,5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0,5" />
         </Style>
     </Window.Resources>
 
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <!-- Search Box -->
-            <RowDefinition Height="Auto"/>
+            <!--  Search Box  -->
+            <RowDefinition Height="Auto" />
 
-            <!-- Advanced Filters -->
-            <RowDefinition Height="Auto"/>
+            <!--  Advanced Filters  -->
+            <RowDefinition Height="Auto" />
 
-            <!-- Column Headers -->
-            <RowDefinition Height="Auto"/>
+            <!--  Column Headers  -->
+            <RowDefinition Height="Auto" />
 
-            <!-- User List -->
-            <RowDefinition Height="*"/>
+            <!--  User List  -->
+            <RowDefinition Height="*" />
 
-            <!-- Buttons -->
-            <RowDefinition Height="Auto"/>
+            <!--  Buttons  -->
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Search Box -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+        <!--  Search Box  -->
+        <StackPanel
+            Grid.Row="0"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
             <Grid Width="300" Height="30">
-                <TextBox x:Name="SearchTextBox"
-                         VerticalContentAlignment="Center"
-                         Padding="25,0,5,0"
-                         KeyDown="SearchTextBox_KeyDown"/>
+                <TextBox
+                    x:Name="SearchTextBox"
+                    Padding="25,0,5,0"
+                    VerticalContentAlignment="Center"
+                    KeyDown="SearchTextBox_KeyDown" />
 
-                <Image Source="/Assets/Images/Search.png"
-                       Width="16"
-                       Height="16"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       Margin="5,0,0,0"
-                       IsHitTestVisible="False"/>
+                <Image
+                    Width="16"
+                    Height="16"
+                    Margin="5,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    IsHitTestVisible="False"
+                    Source="/Assets/Images/Search.png" />
 
-                <TextBlock x:Name="PlaceholderTextBlock"
-                           Text="フィルターを選択し、検索してください。"
-                           Foreground="Gray"
-                           VerticalAlignment="Center"
-                           Margin="25,0,5,0"
-                           IsHitTestVisible="False"/>
+                <TextBlock
+                    x:Name="PlaceholderTextBlock"
+                    Margin="25,0,5,0"
+                    VerticalAlignment="Center"
+                    Foreground="Gray"
+                    IsHitTestVisible="False"
+                    Text="フィルターを選択し、検索してください。" />
             </Grid>
 
-            <Button x:Name="SearchButton" 
-                    Content="検索" 
-                    Width="80" 
-                    Margin="10,0,0,0" 
-                    Click="SearchButton_Click"
-                    IsEnabled="False"
-                    ToolTip="フィルターを選択してください" />
+            <Button
+                x:Name="SearchButton"
+                Width="80"
+                Margin="10,0,0,0"
+                Click="SearchButton_Click"
+                Content="検索"
+                IsEnabled="False"
+                ToolTip="フィルターを選択してください" />
 
-            <Button x:Name="ResetButton"
-                    Content="リセット"
-                    Width="80"
-                    Margin="10,0,0,0"
-                    Click="ResetFilters_Click" />
+            <Button
+                x:Name="ResetButton"
+                Width="80"
+                Margin="10,0,0,0"
+                Click="ResetFilters_Click"
+                Content="リセット" />
         </StackPanel>
 
-        <!-- Advanced Filters -->
-        <Expander Grid.Row="1" Header="フィルター" Margin="0,10" IsExpanded="True">
+        <!--  Advanced Filters  -->
+        <Expander
+            Grid.Row="1"
+            Margin="0,10"
+            Header="フィルター"
+            IsExpanded="True">
             <StackPanel>
-                <!-- Checkbox Row -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <CheckBox x:Name="NameFilterCheckBox"
-                      Content="名前"
-                      Margin="0,0,10,0"
-                      IsChecked="False"
-                      Checked="FilterCheckBox_Changed"
-                      Unchecked="FilterCheckBox_Changed"/>
-                    <CheckBox x:Name="EmailFilterCheckBox" 
-                      Content="メールアドレス"
-                      Margin="0,0,10,0"
-                      IsChecked="False"
-                      Checked="FilterCheckBox_Changed"
-                      Unchecked="FilterCheckBox_Changed"/>
-                    <CheckBox x:Name="PhoneNumberFilterCheckBox"
-                      Content="電話番号"
-                      Margin="0,0,10,0"
-                      IsChecked="False"
-                      Checked="FilterCheckBox_Changed"
-                      Unchecked="FilterCheckBox_Changed"  
-/>
+                <!--  Checkbox Row  -->
+                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                    <CheckBox
+                        x:Name="NameFilterCheckBox"
+                        Margin="0,0,10,0"
+                        Checked="FilterCheckBox_Changed"
+                        Content="名前"
+                        IsChecked="False"
+                        Unchecked="FilterCheckBox_Changed" />
+                    <CheckBox
+                        x:Name="EmailFilterCheckBox"
+                        Margin="0,0,10,0"
+                        Checked="FilterCheckBox_Changed"
+                        Content="メールアドレス"
+                        IsChecked="False"
+                        Unchecked="FilterCheckBox_Changed" />
+                    <CheckBox
+                        x:Name="PhoneNumberFilterCheckBox"
+                        Margin="0,0,10,0"
+                        Checked="FilterCheckBox_Changed"
+                        Content="電話番号"
+                        IsChecked="False"
+                        Unchecked="FilterCheckBox_Changed" />
                 </StackPanel>
 
-                <!-- Date Picker Row -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <CheckBox x:Name="DateFilterCheckBox"
-                      Content="作成日"
-                      Margin="0,0,10,0"
-                      IsChecked="False"
-                      Checked="FilterCheckBox_Changed"
-                      Unchecked="FilterCheckBox_Changed"/>
-                    <DatePicker x:Name="FromDatePicker" Width="110" Language="ja-Jp">
+                <!--  Date Picker Row  -->
+                <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                    <CheckBox
+                        x:Name="DateFilterCheckBox"
+                        Margin="0,0,10,0"
+                        Checked="FilterCheckBox_Changed"
+                        Content="作成日"
+                        IsChecked="False"
+                        Unchecked="FilterCheckBox_Changed" />
+                    <DatePicker
+                        x:Name="FromDatePicker"
+                        Width="110"
+                        Language="ja-Jp">
                         <DatePicker.Resources>
                             <Style TargetType="DatePickerTextBox">
-                                <Setter Property="Text" Value="日付を選択"/>
+                                <Setter Property="Text" Value="日付を選択" />
                             </Style>
                         </DatePicker.Resources>
                     </DatePicker>
-                    <TextBlock Text="から" VerticalAlignment="Center" Margin="10,0"/>
-                    <DatePicker x:Name="ToDatePicker" Width="110" Language="ja-Jp">
+                    <TextBlock
+                        Margin="10,0"
+                        VerticalAlignment="Center"
+                        Text="から" />
+                    <DatePicker
+                        x:Name="ToDatePicker"
+                        Width="110"
+                        Language="ja-Jp">
                         <DatePicker.Resources>
                             <Style TargetType="DatePickerTextBox">
-                                <Setter Property="Text" Value="日付を選択"/>
+                                <Setter Property="Text" Value="日付を選択" />
                             </Style>
                         </DatePicker.Resources>
                     </DatePicker>
-                    <TextBlock Text="まで" VerticalAlignment="Center" Margin="10,0"/>
+                    <TextBlock
+                        Margin="10,0"
+                        VerticalAlignment="Center"
+                        Text="まで" />
                 </StackPanel>
 
-                <!-- Privileges Row -->
+                <!--  Privileges Row  -->
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox x:Name="PrivilegesFilterCheckBox"
-                      Content="権限"
-                      Margin="0,0,10,0"
-                      IsChecked="False"
-                      Checked="FilterCheckBox_Changed"
-                      Unchecked="FilterCheckBox_Changed"/>
-                    <ComboBox x:Name="PrivilegesCombo"
-                      Width="120"
-                      DisplayMemberPath="Value" 
-                      SelectedValuePath="Key"/>
+                    <CheckBox
+                        x:Name="PrivilegesFilterCheckBox"
+                        Margin="0,0,10,0"
+                        Checked="FilterCheckBox_Changed"
+                        Content="権限"
+                        IsChecked="False"
+                        Unchecked="FilterCheckBox_Changed" />
+                    <ComboBox
+                        x:Name="PrivilegesCombo"
+                        Width="120"
+                        DisplayMemberPath="Value"
+                        SelectedValuePath="Key" />
                 </StackPanel>
             </StackPanel>
         </Expander>
 
-        <!-- Column Headers -->
-        <Border Grid.Row="2" Background="#F0F0F0" Padding="5" Margin="0,10,0,0">
+        <!--  Column Headers  -->
+        <Border
+            Grid.Row="2"
+            Margin="0,10,0,0"
+            Padding="5"
+            Background="#F0F0F0">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.5*" MinWidth="150"/>
-                    <ColumnDefinition Width="2*" MinWidth="200"/>
-                    <ColumnDefinition Width="1*" MinWidth="120"/>
-                    <ColumnDefinition Width="1*" MinWidth="120"/>
-                    <ColumnDefinition Width="1.5*" MinWidth="150"/>
+                    <ColumnDefinition Width="1.5*" MinWidth="150" />
+                    <ColumnDefinition Width="2*" MinWidth="200" />
+                    <ColumnDefinition Width="1*" MinWidth="120" />
+                    <ColumnDefinition Width="1*" MinWidth="120" />
+                    <ColumnDefinition Width="1.5*" MinWidth="150" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="名前" FontWeight="Bold"/>
-                <TextBlock Text="メールアドレス" Grid.Column="1" FontWeight="Bold"/>
-                <TextBlock Text="電話番号" Grid.Column="2" FontWeight="Bold"/>
-                <TextBlock Text="権限" Grid.Column="3" FontWeight="Bold"/>
-                <TextBlock Text="作成日" Grid.Column="4" FontWeight="Bold"/>
+                <TextBlock FontWeight="Bold" Text="名前" />
+                <TextBlock
+                    Grid.Column="1"
+                    FontWeight="Bold"
+                    Text="メールアドレス" />
+                <TextBlock
+                    Grid.Column="2"
+                    FontWeight="Bold"
+                    Text="電話番号" />
+                <TextBlock
+                    Grid.Column="3"
+                    FontWeight="Bold"
+                    Text="権限" />
+                <TextBlock
+                    Grid.Column="4"
+                    FontWeight="Bold"
+                    Text="作成日" />
             </Grid>
         </Border>
 
-        <!-- User List -->
-        <ListBox x:Name="UserListBox" 
-                 Grid.Row="3" 
-                 Margin="0,5,0,0"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+        <!--  User List  -->
+        <ListBox
+            x:Name="UserListBox"
+            Grid.Row="3"
+            Margin="0,5,0,0"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1.5*" MinWidth="150"/>
-                            <ColumnDefinition Width="2*" MinWidth="200"/>
-                            <ColumnDefinition Width="1*" MinWidth="120"/>
-                            <ColumnDefinition Width="1*" MinWidth="120"/>
-                            <ColumnDefinition Width="1.5*" MinWidth="150"/>
+                            <ColumnDefinition Width="1.5*" MinWidth="150" />
+                            <ColumnDefinition Width="2*" MinWidth="200" />
+                            <ColumnDefinition Width="1*" MinWidth="120" />
+                            <ColumnDefinition Width="1*" MinWidth="120" />
+                            <ColumnDefinition Width="1.5*" MinWidth="150" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding Name}" 
-                                   TextTrimming="CharacterEllipsis"
-                                   Margin="5,0"/>
-                        <TextBlock Text="{Binding Email}" 
-                                   Grid.Column="1"
-                                   TextTrimming="CharacterEllipsis"
-                                   Margin="5,0"/>
-                        <TextBlock Text="{Binding PhoneNumber}" 
-                                   Grid.Column="2"
-                                   Margin="5,0"/>
-                        <TextBlock Text="{Binding Privileges}" 
-                                   Grid.Column="3"
-                                   Margin="5,0"/>
-                        <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd}}" 
-                                   Grid.Column="4"
-                                   Margin="5,0"/>
+                        <TextBlock
+                            Margin="5,0"
+                            Text="{Binding Name}"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5,0"
+                            Text="{Binding Email}"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="5,0"
+                            Text="{Binding PhoneNumber}" />
+                        <TextBlock
+                            Grid.Column="3"
+                            Margin="5,0"
+                            Text="{Binding Privileges}" />
+                        <TextBlock
+                            Grid.Column="4"
+                            Margin="5,0"
+                            Text="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd}}" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <!-- Action Buttons -->
+        <!--  Action Buttons  -->
         <Grid Grid.Row="4" Margin="0,10,0,0">
-            <Button x:Name="AddUserButton"
-                    Width="110"
-                    HorizontalAlignment="Left"
-                    Click="AddUserButton_Click">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Image Source="/Assets/Images/AddUser.png"
-                           Width="16"
-                           Height="16"
-                           Margin="0,0,5,0"/>
-                    <TextBlock Text="ユーザーを追加" VerticalAlignment="Center"/>
+            <Button
+                x:Name="AddUserButton"
+                Width="110"
+                HorizontalAlignment="Left"
+                Click="AddUserButton_Click">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        Margin="0,0,5,0"
+                        Source="/Assets/Images/AddUser.png" />
+                    <TextBlock VerticalAlignment="Center" Text="ユーザーを追加" />
                 </StackPanel>
             </Button>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="EditUserButton"
-                        Content="ユーザーを編集"
-                        Width="100"
-                        Margin="0,0,10,0"
-                        Click="EditUser_Click"/>
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button
+                    x:Name="EditUserButton"
+                    Width="100"
+                    Margin="0,0,10,0"
+                    Click="EditUser_Click"
+                    Content="ユーザーを編集" />
 
-                <Button x:Name="DeleteUserButton"
-                        Content="ユーザーの削除"
-                        Width="100"
-                        Click="DeleteUser_Click"/>
+                <Button
+                    x:Name="DeleteUserButton"
+                    Width="100"
+                    Click="DeleteUser_Click"
+                    Content="ユーザーの削除" />
             </StackPanel>
         </Grid>
     </Grid>
