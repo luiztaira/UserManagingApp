@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UserManagingApp.Models
 {
-    //userモデル　（後で電話番号等を追加する）
+    //userモデル
     public class User
     {
         public int Id { get; set; }

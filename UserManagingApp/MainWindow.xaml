@@ -63,56 +63,82 @@
                     Content="検索" 
                     Width="80" 
                     Margin="10,0,0,0" 
-                    Click="SearchButton_Click"/>
+                    Click="SearchButton_Click"
+                    IsEnabled="False"
+                    ToolTip="フィルターを選択してください" />
 
             <Button x:Name="ResetButton"
                     Content="リセット"
                     Width="80"
                     Margin="10,0,0,0"
-                    Click="ResetFilters_Click"/>
+                    Click="ResetFilters_Click" />
         </StackPanel>
 
         <!-- Advanced Filters -->
         <Expander Grid.Row="1" Header="フィルター" Margin="0,10" IsExpanded="True">
             <StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <!-- Checkbox Row -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <CheckBox x:Name="NameFilterCheckBox"
+                      Content="名前"
+                      Margin="0,0,10,0"
+                      IsChecked="False"
+                      Checked="FilterCheckBox_Changed"
+                      Unchecked="FilterCheckBox_Changed"/>
+                    <CheckBox x:Name="EmailFilterCheckBox" 
+                      Content="メールアドレス"
+                      Margin="0,0,10,0"
+                      IsChecked="False"
+                      Checked="FilterCheckBox_Changed"
+                      Unchecked="FilterCheckBox_Changed"/>
+                    <CheckBox x:Name="PhoneNumberFilterCheckBox"
+                      Content="電話番号"
+                      Margin="0,0,10,0"
+                      IsChecked="False"
+                      Checked="FilterCheckBox_Changed"
+                      Unchecked="FilterCheckBox_Changed"  
+/>
+                </StackPanel>
 
-                    <TextBlock Grid.Row="0" Text="作成日：" 
-                               VerticalAlignment="Center" Margin="0,0,10,5"/>
-                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                        <DatePicker x:Name="FromDatePicker" Width="120" Language="ja-Jp">
-                            <DatePicker.Resources>
-                                <Style TargetType="DatePickerTextBox">
-                                    <Setter Property="Text" Value="日付を選択"/>
-                                </Style>
-                            </DatePicker.Resources>
-                        </DatePicker>
-                        <TextBlock Text=" から " VerticalAlignment="Center" Margin="10,0"/>
-                        <DatePicker x:Name="ToDatePicker" Width="120" Language="ja-Jp">
-                            <DatePicker.Resources>
-                                <Style TargetType="DatePickerTextBox">
-                                    <Setter Property="Text" Value="日付を選択"/>
-                                </Style>
-                            </DatePicker.Resources>
-                        </DatePicker>
-                        <TextBlock Text="まで" VerticalAlignment="Center" Margin="10,0"/>
-                        <Button Content="×" Width="20" Margin="5,0" Click="ClearDates_Click"
-                                ToolTip="Clear dates"/>
-                    </StackPanel>
+                <!-- Date Picker Row -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <CheckBox x:Name="DateFilterCheckBox"
+                      Content="作成日"
+                      Margin="0,0,10,0"
+                      IsChecked="False"
+                      Checked="FilterCheckBox_Changed"
+                      Unchecked="FilterCheckBox_Changed"/>
+                    <DatePicker x:Name="FromDatePicker" Width="110" Language="ja-Jp">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Text" Value="日付を選択"/>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <TextBlock Text="から" VerticalAlignment="Center" Margin="10,0"/>
+                    <DatePicker x:Name="ToDatePicker" Width="110" Language="ja-Jp">
+                        <DatePicker.Resources>
+                            <Style TargetType="DatePickerTextBox">
+                                <Setter Property="Text" Value="日付を選択"/>
+                            </Style>
+                        </DatePicker.Resources>
+                    </DatePicker>
+                    <TextBlock Text="まで" VerticalAlignment="Center" Margin="10,0"/>
+                </StackPanel>
 
-                    <TextBlock Grid.Row="1" Text="権限：" 
-                               VerticalAlignment="Center" Margin="0,5,10,5"/>
-                    <ComboBox Grid.Row="1" Grid.Column="1" x:Name="PrivilegesCombo"
-                              DisplayMemberPath="Value" SelectedValuePath="Key" Margin="0,5,10,5"/>
-                </Grid>
+                <!-- Privileges Row -->
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox x:Name="PrivilegesFilterCheckBox"
+                      Content="権限"
+                      Margin="0,0,10,0"
+                      IsChecked="False"
+                      Checked="FilterCheckBox_Changed"
+                      Unchecked="FilterCheckBox_Changed"/>
+                    <ComboBox x:Name="PrivilegesCombo"
+                      Width="120"
+                      DisplayMemberPath="Value" 
+                      SelectedValuePath="Key"/>
+                </StackPanel>
             </StackPanel>
         </Expander>
 

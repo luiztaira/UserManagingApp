@@ -14,6 +14,17 @@ namespace UserManagingApp
         {
             InitializeComponent();
             _context = context;
+
+            var privilegeOptions = new Dictionary<string, string>
+            {
+                { "Admin", "管理者" },
+                { "User", "ユーザー" },
+                { "Guest", "ゲスト" }
+            };
+
+            PrivilegesComboBox.ItemsSource = privilegeOptions;
+            PrivilegesComboBox.DisplayMemberPath = "Value";
+            PrivilegesComboBox.SelectedValuePath = "Key";
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -70,7 +81,7 @@ namespace UserManagingApp
                 Name = NameTextBox.Text.Trim(),
                 Email = EmailTextBox.Text.Trim(),
                 PhoneNumber = PhoneNumberTextBox.Text.Trim(),
-                Privileges = (PrivilegesComboBox.SelectedItem as ComboBoxItem)?.Content.ToString(),
+                Privileges = PrivilegesComboBox.SelectedValue?.ToString(),
                 CreatedAt = DateTime.UtcNow,
                 LastUpdatedAt = DateTime.UtcNow
             };

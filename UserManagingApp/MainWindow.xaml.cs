@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.EntityFrameworkCore;
 using UserManagingApp.Models;
+using LinqExpression = System.Linq.Expressions.Expression;
 
 namespace UserManagingApp
 {
@@ -30,9 +32,9 @@ namespace UserManagingApp
             PrivilegesCombo.ItemsSource = new Dictionary<string, string>
             {
                 { "", "全ての権限" },
-                { "admin", "Admin" },
-                { "user", "User" },
-                { "guest", "Guest" }
+                { "Admin", "管理者" },
+                { "User", "ユーザー" },
+                { "Guest", "ゲスト" }
             };
             PrivilegesCombo.SelectedIndex = 0;
 
@@ -46,6 +48,15 @@ namespace UserManagingApp
             PlaceholderTextBlock.Visibility = string.IsNullOrWhiteSpace(SearchTextBox.Text)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+        }
+
+        private void FilterCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            SearchButton.IsEnabled = NameFilterCheckBox.IsChecked == true ||
+                                     EmailFilterCheckBox.IsChecked == true ||
+                                     PhoneNumberFilterCheckBox.IsChecked == true ||
+                                     DateFilterCheckBox.IsChecked == true ||
+                                     PrivilegesFilterCheckBox.IsChecked == true;
         }
 
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -63,25 +74,41 @@ namespace UserManagingApp
                 var query = _context.Users.AsNoTracking().AsQueryable();
                 string searchTerm = SearchTextBox.Text.Trim();
 
-                // Text search (applies to all fields including privileges)
-                if (!string.IsNullOrWhiteSpace(searchTerm))
+                if (searchTerm != null && searchTerm.Length > 0)
                 {
-                    query = query.Where(u =>
-                        EF.Functions.ILike(u.Name, $"%{searchTerm}%") ||
-                        EF.Functions.ILike(u.Email, $"%{searchTerm}%") ||
-                        (u.PhoneNumber != null && EF.Functions.ILike(u.PhoneNumber, $"%{searchTerm}%")) ||
-                        (u.Privileges != null && EF.Functions.ILike(u.Privileges, $"%{searchTerm}%")));
+                    var conditions = new List<Expression<Func<User, bool>>>();
+                    if (NameFilterCheckBox.IsChecked == true)
+                    {
+                        conditions.Add(u => EF.Functions.ILike(u.Name, $"%{searchTerm}%"));
+                    }
+                    if (EmailFilterCheckBox.IsChecked == true)
+                    {
+                        conditions.Add(u => EF.Functions.ILike(u.Email, $"%{searchTerm}%"));
+                    }
+                    if (PhoneNumberFilterCheckBox.IsChecked == true)
+                    {
+                        conditions.Add(u => u.PhoneNumber != null && EF.Functions.ILike(u.PhoneNumber, $"%{searchTerm}%"));
+                    }
+
+                    if (conditions.Any())
+                    {
+                        var combinedCondition = conditions.Aggregate((c1, c2) => LinqExpression.Lambda<Func<User, bool>>(
+                            LinqExpression.OrElse(c1.Body, c2.Body),
+                            c1.Parameters[0]));
+
+                        query = query.Where(combinedCondition);
+                    }
                 }
 
-                // Privileges ComboBox filter (exact match)
-                if (PrivilegesCombo.SelectedValue is string selectedPrivilege && !string.IsNullOrEmpty(selectedPrivilege))
+                // Privileges ComboBox filter
+                if (PrivilegesFilterCheckBox.IsChecked == true && PrivilegesCombo.SelectedValue is string selectedPrivilege && !string.IsNullOrEmpty(selectedPrivilege))
                 {
                     query = query.Where(u => u.Privileges != null &&
                            u.Privileges.ToLower() == selectedPrivilege.ToLower());
                 }
 
-                // Date filter (unchanged)
-                if (FromDatePicker.SelectedDate != null && ToDatePicker.SelectedDate != null)
+                // Date filter
+                if (DateFilterCheckBox.IsChecked == true && FromDatePicker.SelectedDate != null && ToDatePicker.SelectedDate != null)
                 {
                     var fromDateUtc = FromDatePicker.SelectedDate.Value.ToUniversalTime();
                     var toDateUtc = ToDatePicker.SelectedDate.Value.AddDays(1).ToUniversalTime();
@@ -130,15 +157,16 @@ namespace UserManagingApp
             FromDatePicker.SelectedDate = null;
             ToDatePicker.SelectedDate = null;
             PrivilegesCombo.SelectedIndex = 0;
+
+            NameFilterCheckBox.IsChecked = false;
+            EmailFilterCheckBox.IsChecked = false;
+            PhoneNumberFilterCheckBox.IsChecked = false;
+            DateFilterCheckBox.IsChecked = false;
+            PrivilegesFilterCheckBox.IsChecked = false;
+
             RefreshUserList();
         }
 
-        // Clear dates button handler
-        private void ClearDates_Click(object sender, RoutedEventArgs e)
-        {
-            FromDatePicker.SelectedDate = null;
-            ToDatePicker.SelectedDate = null;
-        }
 
         // Window size change handler
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)

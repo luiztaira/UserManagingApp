@@ -24,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\FilterValidator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\Icons\AddUser.ico" />
     <None Remove="Assets\Icons\Edit.ico" />
     <None Remove="Assets\Images\AddUser.png" />

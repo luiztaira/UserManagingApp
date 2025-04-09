@@ -1,6 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
-using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using UserManagingApp.Models;
 using UserManagingApp.Services;
@@ -24,14 +22,17 @@ namespace UserManagingApp
             PhoneNumberTextBox.Text = user.PhoneNumber;
 
             // Initialize privilege selection
-            foreach (ComboBoxItem item in PrivilegesComboBox.Items)
+            var privilegeOptions = new Dictionary<string, string>
             {
-                if (item.Content.ToString() == user.Privileges)
-                {
-                    PrivilegesComboBox.SelectedItem = item;
-                    break;
-                }
-            }
+                { "Admin", "管理者" },
+                { "User", "ユーザー" },
+                { "Guest", "ゲスト" }
+            };
+
+            PrivilegesComboBox.ItemsSource = privilegeOptions;
+            PrivilegesComboBox.DisplayMemberPath = "Value";
+            PrivilegesComboBox.SelectedValuePath = "Key";
+            PrivilegesComboBox.SelectedValue = _user.Privileges;
         }
 
         private async void OKButton_Click(object sender, RoutedEventArgs e)
@@ -60,7 +61,7 @@ namespace UserManagingApp
                 return;
             }
 
-            if (UserValidator.IsNameDuplicate(_context, newName, out var dupNameError))
+            if (newName != _user.Name && UserValidator.IsNameDuplicate(_context, newName, out var dupNameError))
             {
                 MessageBox.Show(
                     dupNameError,
@@ -71,7 +72,7 @@ namespace UserManagingApp
                 return;
             }
 
-            if (UserValidator.IsEmailDuplicate(_context, newEmail, out var dupEmailError))
+            if (newEmail != _user.Email && UserValidator.IsEmailDuplicate(_context, newEmail, out var dupEmailError))
             {
                 MessageBox.Show(
                     dupEmailError,
@@ -84,7 +85,7 @@ namespace UserManagingApp
             _user.Name = NameTextBox.Text.Trim();
             _user.Email = EmailTextBox.Text.Trim();
             _user.PhoneNumber = PhoneNumberTextBox.Text.Trim();
-            _user.Privileges = (PrivilegesComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+            _user.Privileges = PrivilegesComboBox.SelectedValue?.ToString();
             _user.LastUpdatedAt = DateTime.UtcNow;
 
             try

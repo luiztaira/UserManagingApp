@@ -41,10 +41,7 @@
 
         <!-- Privileges -->
         <TextBlock Text="権限：" Grid.Row="6" Margin="0,10,0,5"/>
-        <ComboBox x:Name="PrivilegesComboBox" Grid.Row="7" SelectedIndex="1" Margin="0,0,0,20">
-            <ComboBoxItem Content="Admin"/>
-            <ComboBoxItem Content="User" IsSelected="True"/>
-            <ComboBoxItem Content="Guest"/>
+        <ComboBox x:Name="PrivilegesComboBox" Grid.Row="7" Margin="0,0,0,20">
         </ComboBox>
 
         <!-- Buttons -->
